@@ -2,8 +2,8 @@
 
 from sqlalchemy import func
 from model import User
-# from model import Rating
-# from model import Movie
+from model import Ratings
+from model import Movies
 
 from model import connect_to_db, db
 from server import app
@@ -36,10 +36,46 @@ def load_users():
 
 def load_movies():
     """Load movies from u.item into database."""
+    print("Movies")
+
+    for row in open("seed_data/u.item"):
+        row = row.strip()
+        movie_id, title, released_at, blank, imdb_url, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen = row.split("|")
+        
+        delete_year = slice(0, len(title)-6)
+        title = title[delete_year]
+
+
+        movies = Movies(movie_id=movie_id,
+                        title=title,
+                        released_at=released_at,
+                        imdb_url=imdb_url)
+        
+        db.session.add(movies)
+        db.session.commit()        
 
 
 def load_ratings():
     """Load ratings from u.data into database."""
+    print("Ratings")
+    id = 0
+    for row in open('seed_data/u.data'):
+        id += 1
+        row = row.strip().split("\t")
+        
+        rating_id = id
+        movie_id = row[0]
+        user_id = row[1]
+        score = row[2]
+
+        rating = Ratings(rating_id=rating_id,
+                         movie_id=movie_id,
+                         user_id=user_id,
+                         score=score)
+
+        db.session.add(rating)
+        db.session.commit()
+        
 
 
 def set_val_user_id():
@@ -62,7 +98,7 @@ if __name__ == "__main__":
     db.create_all()
 
     # Import different types of data
-    load_users()
+    # load_users()
     load_movies()
-    load_ratings()
+    # load_ratings()
     set_val_user_id()
