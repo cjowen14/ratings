@@ -42,15 +42,29 @@ class Movies(db.Model):
     released_at = db.Column(db.DateTime)
     imdb_url = db.Column(db.String(256))
 
+    def __repr__(self):
+        return f"Movie: {self.title}"
+
 
 class Ratings(db.Model):
 
     __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer)
-    user_id = db.Column(db.Integer)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     score = db.Column(db.Integer)
+
+    user = db.relationship("User",
+                            backref=db.backref("ratings",
+                                                order_by=rating_id))
+
+    movie = db.relationship("Movies",
+                            backref=db.backref("ratings",
+                                                order_by=rating_id))
+
+    def __repr__(self):
+        return f"{self.score}"
 
 
 ##############################################################################

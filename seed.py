@@ -4,6 +4,7 @@ from sqlalchemy import func
 from model import User
 from model import Ratings
 from model import Movies
+from datetime import datetime
 
 from model import connect_to_db, db
 from server import app
@@ -42,9 +43,11 @@ def load_movies():
         row = row.strip()
         movie_id, title, released_at, blank, imdb_url, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen = row.split("|")
         
-        delete_year = slice(0, len(title)-6)
+        delete_year = slice(0, len(title)-7)
         title = title[delete_year]
 
+        if released_at:
+            released_at = datetime.strptime(released_at, "%d-%b-%Y")
 
         movies = Movies(movie_id=movie_id,
                         title=title,
@@ -64,13 +67,13 @@ def load_ratings():
         row = row.strip().split("\t")
         
         rating_id = id
-        movie_id = row[0]
-        user_id = row[1]
+        user_id = row[0]
+        movie_id = row[1]
         score = row[2]
 
         rating = Ratings(rating_id=rating_id,
-                         movie_id=movie_id,
                          user_id=user_id,
+                         movie_id=movie_id,
                          score=score)
 
         db.session.add(rating)
@@ -99,6 +102,6 @@ if __name__ == "__main__":
 
     # Import different types of data
     # load_users()
-    load_movies()
-    # load_ratings()
+    # load_movies()
+    load_ratings()
     set_val_user_id()

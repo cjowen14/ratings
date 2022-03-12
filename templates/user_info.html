@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>AGE: {{ user.age }}</h1>
+<h1>ZIPCODE: {{ user.zipcode }}</h1>
+<h1>RATED MOVIES:</h1>
+<ul>   
+    {% set i = -1 %}
+    {% for movie in movies %} 
+        <li><p style="font-weight: bold; display: inline;">Movie:</p> {{ movie }}   <p style="font-weight: bold; display: inline;">Rating:</p> {{ movies[movie] }}</li>
+    {% endfor %}
+</ul>
+
+    
+
+
+
+
+
+{% endblock %}
